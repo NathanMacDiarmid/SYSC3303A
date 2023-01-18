@@ -5,23 +5,21 @@ import java.util.Random;
 public class Main {
     public static void main(String[] args) {
         Random rand = new Random();
-        int firstIngredient = rand.nextInt((3 - 1) + 1) + 1;
-        int secondIngredient = 0;
+        int firstIngredient;
+        int secondIngredient;
         boolean notTheSame = true;
 
-        // initializes the first two random numbers
-        while (notTheSame) {
-            secondIngredient = rand.nextInt((3 - 1) + 1) + 1;
-            if (!(firstIngredient == secondIngredient)) {
-                notTheSame = false;
+        for (int i = 1; i <= 20; i++) {
+            firstIngredient = rand.nextInt((3 - 1) + 1) + 1;
+
+            // initializes the first two random numbers
+            while (notTheSame) {
+                secondIngredient = rand.nextInt((3 - 1) + 1) + 1;
+                if (!(firstIngredient == secondIngredient)) {
+                    notTheSame = false;
+                }
             }
-        }
-
-        //BreadChef breadChef = new BreadChef(firstIngredient, secondIngredient);
-        //JamChef jamChef = new JamChef();
-        //PeanutButterChef peanutButterChef = new PeanutButterChef();
-
-        for (int i = 1; i <= 15; i++) {
+            // this is where thread calling goes
         }
     }
 }
