@@ -1,30 +1,27 @@
 package Assignment1;
 
-public class Agent {
-    private boolean empty = false;
-    private int ingredient;
+import java.util.Random;
 
-    public synchronized int get() {
-        while (!empty) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-            }
-        }
-        empty = false;
-        notifyAll();
-        return ingredient;
+public class Agent implements Runnable {
+    private int firstIngredient;
+    private int secondIngredient;
+    private Table table;
+
+    public Agent(Table table) {
+        this.table = table;
     }
 
-    public synchronized void put(int ingredient) {
-        while(empty) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
+    @Override
+    public void run() {
+        while (true) {
+            Random rand = new Random();
+            firstIngredient = rand.nextInt((3 - 1) + 1) + 1;
+            secondIngredient = rand.nextInt((3 - 1) + 1) + 1;
+            while (firstIngredient == secondIngredient) {
+                secondIngredient = rand.nextInt((3 - 1) + 1) + 1;
             }
+            table.put(firstIngredient, secondIngredient);
+            System.out.println("Agent just put the ingredients on the table:   " + firstIngredient + "   " + secondIngredient);
         }
-        this.ingredient = ingredient;
-        empty = true;
-        notifyAll();
     }
 }

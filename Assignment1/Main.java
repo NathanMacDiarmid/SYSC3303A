@@ -1,32 +1,19 @@
 package Assignment1;
 
-//import java.util.Random;
-
 public class Main {
     public static void main(String[] args) {
-
-        Agent agent = new Agent();
-        JamChef jamChef = new JamChef(agent, 1);
-        BreadChef breadChef = new BreadChef(agent, 1);
-        jamChef.start();
-        breadChef.start();
-
-        /*Random rand = new Random();
-        int firstIngredient;
-        int secondIngredient;
-        boolean notTheSame = true;
-
-        for (int i = 1; i <= 20; i++) {
-            firstIngredient = rand.nextInt((3 - 1) + 1) + 1;
-
-            // initializes the first two random numbers
-            while (notTheSame) {
-                secondIngredient = rand.nextInt((3 - 1) + 1) + 1;
-                if (!(firstIngredient == secondIngredient)) {
-                    notTheSame = false;
-                }
-            }
-            // this is where thread calling goes
-        }*/
+        Table table = new Table();
+        Agent agent = new Agent(table);
+        Chef breadChef = new Chef(table, 1);
+        Chef jamChef = new Chef(table, 2);
+        Chef peanutButterChef = new Chef(table, 3);
+        Thread agentThread = new Thread(agent);
+        Thread breadThread = new Thread(breadChef);
+        Thread jamThread = new Thread(jamChef);
+        Thread peanutThread = new Thread(peanutButterChef);
+        agentThread.start();
+        breadThread.start();
+        jamThread.start();
+        peanutThread.start();
     }
 }
