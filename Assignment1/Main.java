@@ -1,10 +1,17 @@
 package Assignment1;
 
-import java.util.Random;
+//import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        Random rand = new Random();
+
+        Agent agent = new Agent();
+        JamChef jamChef = new JamChef(agent, 1);
+        BreadChef breadChef = new BreadChef(agent, 1);
+        jamChef.start();
+        breadChef.start();
+
+        /*Random rand = new Random();
         int firstIngredient;
         int secondIngredient;
         boolean notTheSame = true;
@@ -20,6 +27,6 @@ public class Main {
                 }
             }
             // this is where thread calling goes
-        }
+        }*/
     }
 }
