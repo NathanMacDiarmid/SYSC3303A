@@ -3,8 +3,6 @@ package Assignment1;
 import java.util.Random;
 
 public class Agent implements Runnable {
-    private int firstIngredient;
-    private int secondIngredient;
     private Table table;
 
     /**
@@ -24,8 +22,8 @@ public class Agent implements Runnable {
         while (true) {
             // Generates the two random ingredients to supply the table
             Random rand = new Random();
-            firstIngredient = rand.nextInt((3 - 1) + 1) + 1;
-            secondIngredient = rand.nextInt((3 - 1) + 1) + 1;
+            int firstIngredient = rand.nextInt((3 - 1) + 1) + 1;
+            int secondIngredient = rand.nextInt((3 - 1) + 1) + 1;
             while (firstIngredient == secondIngredient) {
                 secondIngredient = rand.nextInt((3 - 1) + 1) + 1;
             }
