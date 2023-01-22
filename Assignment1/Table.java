@@ -62,7 +62,7 @@ public class Table {
      * @param ingredient the ingredient that is attempting to be passed to finish the sandwhich
      * @return true if ingredient is in {@link #ingredients}, false otherwise
      */
-    public boolean isRightIngredient(int ingredient) {
+    private boolean isRightIngredient(int ingredient) {
         if (this.ingredients.get(0) == ingredient || this.ingredients.get(1) == ingredient) {
             return true;
         }
