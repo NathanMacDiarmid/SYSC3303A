@@ -1,3 +1,5 @@
+package Assignment2;
+
 // SimpleEchoClient.java
 // This class is the client side for a simple echo server based on
 // UDP/IP. The client sends a character string to the echo server, then waits 
