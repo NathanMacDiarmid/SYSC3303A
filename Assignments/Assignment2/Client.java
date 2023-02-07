@@ -1,6 +1,6 @@
 package Assignment2;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
 
 public class Client {
@@ -12,15 +12,14 @@ public class Client {
             // Construct a datagram socket and bind it to port 23
             // on the local host machine. This socket will be used to
             // send and receive UDP Datagram packets.
-            sendReceiveSocket = new DatagramSocket(23);
+            sendReceiveSocket = new DatagramSocket();
          } catch (SocketException se) {   // Can't create the socket.
             se.printStackTrace();
             System.exit(1);
          }
     }
 
-    public void sendAndReceive()
-   {
+   public void send() {
       // Prepare a DatagramPacket and send it via sendReceiveSocket
       // to port 23 on the destination host.
  
@@ -73,7 +72,9 @@ public class Client {
       }
 
       System.out.println("Client: Packet sent.\n");
+   }
 
+   public void receive() {
       // Construct a DatagramPacket for receiving packets up 
       // to 100 bytes long (the length of the byte array).
 
@@ -92,7 +93,7 @@ public class Client {
       System.out.println("Client: Packet received:");
       System.out.println("From host: " + receivePacket.getAddress());
       System.out.println("Host port: " + receivePacket.getPort());
-      len = receivePacket.getLength();
+      int len = receivePacket.getLength();
       System.out.println("Length: " + len);
       System.out.print("Containing: ");
 
