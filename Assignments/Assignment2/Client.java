@@ -7,16 +7,16 @@ public class Client {
     DatagramPacket sendPacket, receivePacket;
     DatagramSocket sendReceiveSocket;
 
-    public Client() {
-        try {
-            // Construct a datagram socket and bind it to port 23
-            // on the local host machine. This socket will be used to
-            // send and receive UDP Datagram packets.
-            sendReceiveSocket = new DatagramSocket();
-         } catch (SocketException se) {   // Can't create the socket.
-            se.printStackTrace();
-            System.exit(1);
-         }
+   public Client() {
+      try {
+         // Construct a datagram socket and bind it to port 23
+         // on the local host machine. This socket will be used to
+         // send and receive UDP Datagram packets.
+         sendReceiveSocket = new DatagramSocket();
+      } catch (SocketException se) {   // Can't create the socket.
+         se.printStackTrace();
+         System.exit(1);
+      }
     }
 
    public void send() {
@@ -100,7 +100,9 @@ public class Client {
       // Form a String from the byte array.
       String received = new String(data,0,len);   
       System.out.println(received);
+   }
 
+   public void closeSocket() {
       // We're finished, so close the socket.
       sendReceiveSocket.close();
    }
