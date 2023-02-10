@@ -3,61 +3,59 @@ package Assignment2;
 import java.io.*;
 import java.net.*;
 
+/**
+ * @author Nathan MacDiarmid 101098993
+ * The Server class is the class that receives the messages
+ * and returns an emoji based on whether its a read or write request
+ */
 public class Server {
+    private DatagramPacket sendPacket, receivePacket;
+    private DatagramSocket sendSocket, receiveSocket;
+    private byte[] data = new byte[100];
 
-    DatagramPacket sendPacket, receivePacket;
-    DatagramSocket sendSocket, receiveSocket;
-    byte[] data = new byte[100];
-
+    /**
+     * @author Nathan MacDiarmid 101098993
+     * Default constructor for Server
+     */
     public Server() {
+        // Initializes the send and receive sockets
+        // The receive socket is linked to port 69 so the
+        // Host can send directly to the Server
         try {
-            // Construct a datagram socket and bind it to any available 
-            // port on the local host machine. This socket will be used to
-            // send UDP Datagram packets.
             sendSocket = new DatagramSocket();
-
-            // Construct a datagram socket and bind it to port 5000 
-            // on the local host machine. This socket will be used to
-            // receive UDP Datagram packets.
             receiveSocket = new DatagramSocket(69);
-            
-            // to test socket timeout (2 seconds)
-            //receiveSocket.setSoTimeout(2000);
         } catch (SocketException se) {
             se.printStackTrace();
             System.exit(1);
         } 
    }
 
+   /**
+    * @author Nathan MacDiarmid 101098993
+    * Send method for the Server sends the emoji message
+    * back to wherever the message received came from
+    */
     public void send() {
-        // Create a new datagram packet containing the string received from the client.
+        // Initializes byte array with only for bits
+        byte[] msg = new byte[4];
 
-        // Construct a datagram packet that is to be sent to a specified port 
-        // on a specified host.
-        // The arguments are:
-        //  data - the packet data (a byte array). This is the packet data
-        //         that was received from the client.
-        //  receivePacket.getLength() - the length of the packet data.
-        //    Since we are echoing the received packet, this is the length 
-        //    of the received packet's data. 
-        //    This value is <= data.length (the length of the byte array).
-        //  receivePacket.getAddress() - the Internet address of the 
-        //     destination host. Since we want to send a packet back to the 
-        //     client, we extract the address of the machine where the
-        //     client is running from the datagram that was sent to us by 
-        //     the client.
-        //  receivePacket.getPort() - the destination port number on the 
-        //     destination host where the client is running. The client
-        //     sends and receives datagrams through the same socket/port,
-        //     so we extract the port that the client used to send us the
-        //     datagram, and use that as the destination port for the echoed
-        //     packet.
+        // Sets the byte array to a heart and smiley emoji
+        if (data[1] == 1) {
+            msg[0] = 0;
+            msg[1] = 3;
+            msg[2] = 0;
+            msg[3] = 1;
+        }
+        // Sets the byte array to a diamond emoji
+        if (data[1] == 2) {
+            msg[0] = 0;
+            msg[1] = 4;
+            msg[2] = 0;
+            msg[3] = 0;
+        }
 
-        String s = "Yes I am here!";
-        byte msg[] = s.getBytes();
-
-        sendPacket = new DatagramPacket(msg, msg.length,
-        receivePacket.getAddress(), receivePacket.getPort());
+        // Initializes the DatagramPacket to be sent
+        sendPacket = new DatagramPacket(msg, msg.length, receivePacket.getAddress(), receivePacket.getPort());
 
         System.out.println( "Server: Sending packet:");
         System.out.println("To host: " + sendPacket.getAddress());
@@ -66,10 +64,11 @@ public class Server {
         System.out.println("Length: " + len);
         System.out.print("Containing: ");
         System.out.println(new String(sendPacket.getData(),0,len));
-        // or (as we should be sending back the same thing)
-        // System.out.println(received); 
+        this.printByteArray(data);
+        System.out.println();
 
-        // Send the datagram packet to the client via the send socket. 
+        // Sends the DatagramPacket to the specified port
+        // In this case, it sends it to where the initial message was sent from
         try {
             sendSocket.send(sendPacket);
         } catch (IOException e) {
@@ -80,15 +79,19 @@ public class Server {
         System.out.println("Server: packet sent");
    }
 
+   /**
+    * @author Nathan MacDiarmid 101098993
+    * Receive method for Server receives the message
+    * from wherever the message was sent from
+    */
    public void receive() {
-        // Construct a DatagramPacket for receiving packets up 
-        // to 100 bytes long (the length of the byte array).
+        // Initializes the receive DatagramPacket
         receivePacket = new DatagramPacket(data, data.length);
         System.out.println("Server: Waiting for Packet.\n");
 
-        // Block until a datagram packet is received from receiveSocket.
+        // Receives the DatagramPacket
         try {        
-            System.out.println("Waiting..."); // so we know we're waiting
+            System.out.println("Waiting...");
             receiveSocket.receive(receivePacket);
         } catch (IOException e) {
             System.out.print("IO Exception: likely:");
@@ -97,7 +100,6 @@ public class Server {
             System.exit(1);
         }
 
-        // Process the received datagram.
         System.out.println("Server: Packet received:");
         System.out.println("From host: " + receivePacket.getAddress());
         System.out.println("Host port: " + receivePacket.getPort());
@@ -105,22 +107,66 @@ public class Server {
         System.out.println("Length: " + len);
         System.out.print("Containing: " );
 
-        // Form a String from the byte array.
-        String received = new String(data,0,len);   
-        System.out.println(received + "\n");
-        
-        // Slow things down (wait 5 seconds)
-        /*try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e ) {
-            e.printStackTrace();
+        String received = new String(data,2,len);   
+        System.out.println(received);
+        this.printByteArray(data);
+
+        // Determines whether the message was a read, write or invalid request
+        // In the case of an invalid request, the returns the message to
+        // sender, closes the open sockets and ends the program for the Server
+        if (data[1] == 1) {
+            System.out.println("This was a valid read request");
+        } else if (data[1] == 2) {
+            System.out.println("This was a valid write request");
+        } else {
+            System.out.println("This is an invalid request!");
+            try {
+                sendSocket.send(receivePacket);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+            this.closeSocket();
             System.exit(1);
-        }*/
+        }
+        System.out.println();
    }
+
+   /**
+    * @author Nathan MacDiarmid 101098993
+    * Prints a formatted array of bytes that it is passed
+    * @param b an array of bytes that encode a message
+    */
+    public void printByteArray(byte[] b) {
+        System.out.print("Byte array for this message is: ");
+        for (int i = 0; i < b.length; i++) {
+            System.out.format("%01X", b[i]);
+        }
+        System.out.println();
+    }
    
+    /**
+    * @author Nathan MacDiarmid 101098993
+    * Closes the open sockets when program ends
+    */
     public void closeSocket() {
-        // We're finished, so close the socket.
         sendSocket.close();
         receiveSocket.close();
+    }
+
+    /**
+    * @author Nathan MacDiarmid 101098993
+    * The main method for Server runs the Server program
+    * Must be started first out of Host and Client
+    * @param args
+    */
+    public static void main(String args[]) {
+        Server server = new Server();
+
+        for (int i = 1; i < 13; i++) {
+            server.receive();
+            server.send();
+        }
+        server.closeSocket();
     }
 }
