@@ -137,7 +137,7 @@ public class Server {
     * Prints a formatted array of bytes that it is passed
     * @param b an array of bytes that encode a message
     */
-    public void printByteArray(byte[] b) {
+    private void printByteArray(byte[] b) {
         System.out.print("Byte array for this message is: ");
         for (int i = 0; i < b.length; i++) {
             System.out.format("%01X", b[i]);

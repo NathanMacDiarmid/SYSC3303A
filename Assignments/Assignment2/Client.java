@@ -102,7 +102,7 @@ public class Client {
     * Prints a formatted array of bytes that it is passed
     * @param b an array of bytes that encode a message
     */
-   public void printByteArray(byte[] b) {
+   private void printByteArray(byte[] b) {
       System.out.print("Byte array for this message is: ");
       for (int i = 0; i < b.length; i++) {
          System.out.format("%01X", b[i]);
@@ -120,7 +120,7 @@ public class Client {
     * @param requestType whether the array is a read or write request
     * @return the formatted byte array prepared for sending
     */
-   public byte[] createBytes(String message, String mode, int requestType) {
+   private byte[] createBytes(String message, String mode, int requestType) {
       byte[] msg = new byte[20];
       msg[0] = 0;
       msg[1] = (byte) requestType;
