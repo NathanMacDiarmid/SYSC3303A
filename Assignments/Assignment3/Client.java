@@ -64,8 +64,40 @@ public class Client {
       System.out.println("Client: Packet sent.\n");
    }
 
-   public void sendRequest() {
+   /**
+    * @author Nathan MacDiarmid 101098993
+    * Sends the request for the data that is held by the Host
+    */
+    public void sendRequest() {
       // TO DO
+      // Prepares the message to be sent by forming a byte array
+      String message = "Can I get the deats?";
+      byte[] msg = message.getBytes();
+
+      System.out.println("Client: sending a packet containing: " + message);
+
+      // Creates the DatagramPacket to be sent to port 23
+      try {
+         sendPacket = new DatagramPacket(msg, msg.length, InetAddress.getLocalHost(), 23);
+      } catch (UnknownHostException e) {
+         e.printStackTrace();
+         System.exit(1);
+      }
+
+      System.out.println("To host: " + sendPacket.getAddress());
+      System.out.println("Destination host port: " + sendPacket.getPort());
+      int len = sendPacket.getLength();
+      System.out.println("Length: " + len);
+
+      // Sends the DatagramPacket over port 23
+      try {
+         sendReceiveSocket.send(sendPacket);
+      } catch (IOException e) {
+         e.printStackTrace();
+         System.exit(1);
+      }
+
+      System.out.println("Client: Request sent.\n");
    }
 
    /**
@@ -101,24 +133,31 @@ public class Client {
       System.out.println();
    }
 
+   /**
+    * @author Nathan MacDiarmid 101098993
+    * Receives the acknowledgement from the Host that it has received the message
+    * and accepted the data.
+    */
    public void receiveAcknowledgement() {
-      byte data[] = new byte[30];
+      // Prepares the byte array for arrival
+      // It is only of length 40 because the host only sends a byte
+      // array of 40 in return ("The host has accepted the message.")
+      byte data[] = new byte[40];
       receivePacket = new DatagramPacket(data, data.length);
 
+      // Receives the DatagramPacket on the send and receive socket
       try {
          sendReceiveSocket.receive(receivePacket);
       } catch(IOException e) {
          e.printStackTrace();
          System.exit(1);
       }
-
       System.out.println("Client: Packet received:");
       System.out.println("From host: " + receivePacket.getAddress());
       System.out.println("Host port: " + receivePacket.getPort());
       int len = receivePacket.getLength();
       System.out.println("Length: " + len);
       System.out.print("Containing: ");
-
       String received = new String(data,0,len);   
       System.out.println(received);
       this.printByteArray(data);
@@ -189,9 +228,12 @@ public class Client {
          }
          client.sendData("test.txt", "HEXascii", requestType);
          client.receiveAcknowledgement();
+         client.sendRequest();
          client.receiveData();
       }
       client.sendData("test.txt", "HEXascii", 7);
+      client.receiveAcknowledgement();
+      client.sendRequest();
       client.receiveData();
       client.closeSocket();
    }

@@ -10,7 +10,7 @@ import java.net.*;
  */
 public class Host {
     private DatagramPacket sendPacket, receivePacket23, receivePacket69;
-    private DatagramSocket sendAndReceiveSocket, receiveSocket23;
+    private DatagramSocket sendAndReceiveSocket, receiveSocket23, receiveSocket69;
     private byte[] data = new byte[100];
 
     /**
@@ -24,6 +24,7 @@ public class Host {
         try {
             sendAndReceiveSocket = new DatagramSocket();
             receiveSocket23 = new DatagramSocket(23);
+            receiveSocket69 = new DatagramSocket(69);
         } catch (SocketException se) {
             se.printStackTrace();
             System.exit(1);
@@ -38,7 +39,7 @@ public class Host {
     public void sendToServer() {
         // Initializes the DatagramPacket to be sent to the server
         sendPacket = new DatagramPacket(data, receivePacket23.getLength(),
-        receivePacket23.getAddress(), 69);
+        receivePacket23.getAddress(), receivePacket69.getPort());
 
         System.out.println( "Host: Sending packet:");
         System.out.println("To host: " + sendPacket.getAddress());
@@ -61,6 +62,38 @@ public class Host {
         System.out.println("Host: packet sent to Server");
         for (int i = 0; i < data.length; i++) {
             data[i] = 0;
+        }
+    }
+
+    /**
+     * @author Nathan MacDiarmid 101098993
+     * Sends to acknowledgement to the Server that the data has been
+     * received and accepted by the host.
+     */
+    public void sendServerAcknowledgement() {
+        String message = "The host is sending deats shortly.";
+        byte[] msg = message.getBytes(); 
+
+        // Initializes the DatagramPacket to send to the Server
+        sendPacket = new DatagramPacket(msg, msg.length,
+        receivePacket69.getAddress(), receivePacket69.getPort());
+
+        System.out.println( "Host: Sending packet acknowledgment to Server:");
+        System.out.println("To host: " + sendPacket.getAddress());
+        System.out.println("Destination host port: " + sendPacket.getPort());
+        int len = sendPacket.getLength();
+        System.out.println("Length: " + len);
+        System.out.print("Containing: ");
+        System.out.println(new String(sendPacket.getData(),0,len));
+        this.printByteArray(msg);
+        System.out.println();
+
+        // Sends the DatagramPacket to the Client
+        try {
+            sendAndReceiveSocket.send(sendPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 
@@ -99,6 +132,39 @@ public class Host {
 
     /**
      * @author Nathan MacDiarmid 101098993
+     * Receives the Servers request for information before
+     * being sent to the Server
+     */
+    public void receiveServerRequest() {
+        // Initializes the DatagramPacket to be received from the Server
+        byte[] request = new byte[20];
+        receivePacket69 = new DatagramPacket(request, request.length);
+        System.out.println("Host: Waiting for Packet.\n");
+
+        // Receives the DatagramPacket from the Server
+        try {        
+            System.out.println("Waiting...");
+            receiveSocket69.receive(receivePacket69);
+        } catch (IOException e) {
+            System.out.print("IO Exception: likely:");
+            System.out.println("Receive Socket Timed Out.\n" + e);
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        System.out.println("Host: Packet received from Server:");
+        System.out.println("From host: " + receivePacket69.getAddress());
+        System.out.println("Host port: " + receivePacket69.getPort());
+        int len = receivePacket69.getLength();
+        System.out.println("Length: " + len);
+        System.out.print("Containing: " );
+
+        String received = new String(request);   
+        System.out.println(received + "\n");
+    }
+
+    /**
+     * @author Nathan MacDiarmid 101098993
      * Send method for Host that sends the message to the Client
      */
     public void sendToClient() {
@@ -130,11 +196,36 @@ public class Host {
         }
     }
 
+    /**
+     * @author Nathan MacDiarmid 101098993
+     * Sends to acknowledgement to the client that the data has been
+     * received and accepted by the host.
+     */
     public void sendClientAcknowledgement() {
-        String message = "This message has been received";
+        String message = "The host has accepted the message.";
         byte[] msg = message.getBytes(); 
 
+        // Initializes the DatagramPacket to send to the Client
+        sendPacket = new DatagramPacket(msg, msg.length,
+        receivePacket23.getAddress(), receivePacket23.getPort());
 
+        System.out.println( "Host: Sending packet acknowledgment to Client:");
+        System.out.println("To host: " + sendPacket.getAddress());
+        System.out.println("Destination host port: " + sendPacket.getPort());
+        int len = sendPacket.getLength();
+        System.out.println("Length: " + len);
+        System.out.print("Containing: ");
+        System.out.println(new String(sendPacket.getData(),0,len));
+        this.printByteArray(msg);
+        System.out.println();
+
+        // Sends the DatagramPacket to the Client
+        try {
+            sendAndReceiveSocket.send(sendPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     /**
@@ -171,6 +262,39 @@ public class Host {
     }
 
     /**
+     * @author Nathan MacDiarmid 101098993
+     * Receives the Clients request for information before
+     * being sent to the Client
+     */
+    public void receiveClientRequest() {
+        // Initializes the DatagramPacket to be received from the Client
+        byte[] request = new byte[20];
+        receivePacket23 = new DatagramPacket(request, request.length);
+        System.out.println("Host: Waiting for Packet.\n");
+
+        // Receives the DatagramPacket from the Client
+        try {        
+            System.out.println("Waiting...");
+            receiveSocket23.receive(receivePacket23);
+        } catch (IOException e) {
+            System.out.print("IO Exception: likely:");
+            System.out.println("Receive Socket Timed Out.\n" + e);
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        System.out.println("Host: Packet received from Client:");
+        System.out.println("From host: " + receivePacket23.getAddress());
+        System.out.println("Host port: " + receivePacket23.getPort());
+        int len = receivePacket23.getLength();
+        System.out.println("Length: " + len);
+        System.out.print("Containing: " );
+
+        String received = new String(request);   
+        System.out.println(received + "\n");
+    }
+
+    /**
     * @author Nathan MacDiarmid 101098993
     * Prints a formatted array of bytes that it is passed
     * @param b an array of bytes that encode a message
@@ -187,9 +311,10 @@ public class Host {
     * @author Nathan MacDiarmid 101098993
     * Closes the open sockets when program ends
     */
-    public void closeSocket() {
+    public void closeSockets() {
         sendAndReceiveSocket.close();
         receiveSocket23.close();
+        receiveSocket69.close();
     }
 
     /**
@@ -203,10 +328,14 @@ public class Host {
 
         for (int i = 1; i < 13; i++) {
             host.receiveFromClient();
+            host.sendClientAcknowledgement();
+            host.receiveServerRequest();
             host.sendToServer();
             host.receiveFromServer();
+            host.sendServerAcknowledgement();
+            host.receiveClientRequest();
             host.sendToClient();
         }
-        host.closeSocket();
+        host.closeSockets();
     }
 }
