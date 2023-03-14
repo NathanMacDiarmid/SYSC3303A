@@ -10,6 +10,6 @@ public class VehiclesEnabled extends State {
 
     @Override
     public void pedestrianWaiting() {
-        System.out.println("Pedestrian waiting is: " + isPedestrianWaiting);
+        System.out.println("Is pedestrian waiting? " + isPedestrianWaiting);
     }
 }

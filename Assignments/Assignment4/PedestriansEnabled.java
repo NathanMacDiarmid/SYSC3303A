@@ -4,7 +4,8 @@ public class PedestriansEnabled extends State {
 
     @Override
     public void timeout(Context state) {
-        System.out.println("Pedestrians enabled");
+        signalVehicles = RED;
+        System.out.println("Traffic light is: " + signalVehicles);
         state.pedestrianWaiting(new PedestriansWalk());
     }
 
