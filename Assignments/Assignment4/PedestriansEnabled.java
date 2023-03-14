@@ -2,7 +2,15 @@ package Assignment4;
 
 public class PedestriansEnabled extends State {
 
-    public PedestriansEnabled() [
-        
-    ]
+    @Override
+    public void timeout(Context state) {
+        System.out.println("Pedestrians enabled");
+        state.pedestrianWaiting(new PedestriansWalk());
+    }
+
+    @Override
+    public void pedestrianWaiting() {
+        System.out.println("Pedestrian waiting is: " + isPedestrianWaiting);
+    }
+
 }
