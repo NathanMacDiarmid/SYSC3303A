@@ -2,13 +2,17 @@ package Assignment4;
 
 public class PedestriansFlash extends State {
 
+    public PedestriansFlash(Context state) {
+        state.getCurrentState().setSignalVehicles(state.getCurrentState().getVehicleSignalRed());
+        state.getCurrentState().setPedestrianWaiting(false);
+    }
+
     @Override
     public void timeout(Context state) {
-        signalVehicles = RED;
-        System.out.println("Traffic light is: " + signalVehicles);
-        for (int i = pedestrianFlashCtr; i >= 0; i--) {
+        System.out.println("Traffic light is: " + state.getPreviousState().getSignalVehicles());
+        for (int i = getFlashCtr(); i >= 0; i--) {
             if (i % 2 == 0) {
-                System.out.println(DONT_WALK);
+                System.out.println(getPedestrianSignalDontWalk());
             } else {
                 System.out.println();
             }
@@ -18,11 +22,11 @@ public class PedestriansFlash extends State {
                 e.printStackTrace();
             }
         }
-        state.pedestrianWaiting(new VehiclesEnabled());
+        state.pedestrianWaiting(new VehiclesEnabled(state));
     }
 
     @Override
     public void pedestrianWaiting() {
-        System.out.println("Pedestrian waiting is: " + isPedestrianWaiting);
+        System.out.println("Is pedestrian waiting? " + getPedestrianWaiting());
     }
 }

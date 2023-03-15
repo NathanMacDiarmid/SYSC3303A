@@ -3,22 +3,32 @@ package Assignment4;
 public class Context {
 
     private State currentState;
+    private State previousState;
 
     public Context() {
-        currentState = new VehiclesEnabled();
+        currentState = new VehiclesEnabled(this);
         System.out.println("System starting ...");
-        // Change to while true loop
+        // TODO Change to while true loop
         for (int i = 0; i < 8; i++) {
-            currentState.timeout(this);
+            timeout();
         }
     }
 
     public void pedestrianWaiting(State state) {
         currentState.pedestrianWaiting();
+        previousState = currentState;
         currentState = state;
     }
 
     public void timeout() {
         currentState.timeout(this);
+    }
+
+    public State getCurrentState() {
+        return currentState;
+    }
+
+    public State getPreviousState() {
+        return previousState;
     }
 }
