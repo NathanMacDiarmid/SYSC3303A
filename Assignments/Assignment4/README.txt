@@ -13,6 +13,15 @@ To run the program (outside of the test harness) run the main
 method in Main. It will run forever, so make sure to stop it when
 you see fit.
 
+Questions
+1 - The first defect that I found is that the pedestrianFlashCtr is
+    set to 7 seconds, but in the description, it says that don't walk should
+    flash for 2 seconds. That is corrected in this assignment.
+
+2 - The second error is the fact that the pedestrian cannot click a button
+    to end the timeout countdown early when a light is green, they must always
+    wait the 10 seconds that is specified.
+
 Main
 Creates an instance of Context which simply starts the state machine.
 
