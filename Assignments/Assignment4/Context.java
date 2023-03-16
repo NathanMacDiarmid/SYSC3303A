@@ -8,8 +8,7 @@ public class Context {
     public Context() {
         currentState = new VehiclesEnabled(this);
         System.out.println("System starting ...");
-        // TODO Change to while true loop
-        for (int i = 0; i < 8; i++) {
+        while(true) {
             timeout();
         }
     }
